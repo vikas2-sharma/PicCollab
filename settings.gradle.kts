@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "PicCollab"
 include(":app")
+include(":core")
