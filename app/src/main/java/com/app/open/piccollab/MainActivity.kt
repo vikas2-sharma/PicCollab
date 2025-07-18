@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.app.open.piccollab.presentation.ui.login.LoginScreen
 import com.app.open.piccollab.ui.theme.PicCollabTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,7 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PicCollabTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
+                    MainScreen(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -31,17 +32,15 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun MainScreen(name: String, modifier: Modifier = Modifier) {
+
+    LoginScreen(modifier = modifier)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     PicCollabTheme {
-        Greeting("Android")
+        MainScreen("Android")
     }
 }
