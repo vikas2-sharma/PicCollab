@@ -36,6 +36,8 @@ android {
 
 dependencies {
 
+
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -43,6 +45,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     //HILT dependencies
     implementation(libs.hilt.android)
@@ -58,4 +63,10 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     // If you want to additionally use the CameraX VideoCapture library
     implementation(libs.androidx.camera.video)
+
+
+    /*Google authentication*/
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 }
