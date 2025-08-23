@@ -98,7 +98,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-
+    /*Coil*/
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     /*HILT dependencies*/
     implementation(libs.hilt.android)
