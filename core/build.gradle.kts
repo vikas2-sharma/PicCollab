@@ -31,6 +31,16 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+
+    }
+    packagingOptions {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+        }
     }
 }
 
@@ -69,4 +79,11 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.play.services.auth)
+
+
+    /*google drive api*/
+    implementation(libs.google.api.client.android)
+
+    implementation(libs.google.api.services.drive)
 }
