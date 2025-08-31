@@ -1,5 +1,7 @@
 package com.app.open.piccollab.core.auth
 
+import android.app.Activity
+import android.app.PendingIntent
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -10,8 +12,12 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.NoCredentialException
 import com.app.open.piccollab.core.models.user.UserData
 import com.app.open.piccollab.core.utils.WEB_CLIENT_ID
+import com.google.android.gms.auth.api.identity.AuthorizationRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.common.api.Scope
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.api.services.drive.DriveScopes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -68,7 +74,49 @@ object AuthManager {
             }
 
         }
+
+
     }
+
+    fun getDrivePermission(
+        activity: Activity,
+        launchIntent: (PendingIntent) -> Unit
+    ) {
+        Log.d(
+            TAG,
+            "getDrivePermission() called with: activity = $activity, launchIntent = $launchIntent"
+        )
+        val requestedScopes: List<Scope> = listOf(Scope(DriveScopes.DRIVE_FILE))
+        val authorizationRequest: AuthorizationRequest = AuthorizationRequest.Builder()
+            .setRequestedScopes(requestedScopes)
+            .build()
+
+        Identity.getAuthorizationClient(activity)
+            .authorize(authorizationRequest)
+            .addOnSuccessListener { authorizationResult ->
+                if (authorizationResult.hasResolution()) {
+                    val pendingIntent = authorizationResult.pendingIntent
+                    // Access needs to be granted by the user
+                    if (pendingIntent != null) {
+                        launchIntent(pendingIntent)
+                    }
+                    /*
+                    startAuthorizationIntent.launch(
+                        IntentSenderRequest.Builder(pendingIntent!!.intentSender).build()
+                    )*/
+                } else {
+                    Log.d(
+                        TAG,
+                        "getDrivePermission: Access was previously granted, continue with user action"
+                    )
+                    // Access was previously granted, continue with user action
+                    /*saveToDriveAppFolder(authorizationResult);*/
+                }
+            }
+            .addOnFailureListener { e -> Log.e(TAG, "Failed to authorize", e) }
+    }
+
+
 }
 
 private suspend fun FlowCollector<UserData?>.handleCredentialResponse(
@@ -105,4 +153,26 @@ private suspend fun FlowCollector<UserData?>.handleCredentialResponse(
 
 
     }
+
+    /*
+        fun startAuthorizationIntent(activity: Activity) {
+            val startAuthorizationIntent =
+                activity.registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { activityResult ->
+                    try {
+                        // extract the result
+                        val authorizationResult = Identity.getAuthorizationClient(requireContext())
+                            .getAuthorizationResultFromIntent(activityResult.data)
+                        // continue with user action
+                        */
+    /*saveToDriveAppFolder(authorizationResult);*//*
+
+                } catch (ApiException e) {
+                    // log exception
+                }
+            }
+
+    }
+*/
+
 }
+
