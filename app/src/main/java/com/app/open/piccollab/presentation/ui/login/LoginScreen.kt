@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.app.open.piccollab.presentation.common.ButtonWithText
 import com.app.open.piccollab.presentation.ui.login.viewmodel.LoginViewmodel
 import kotlinx.coroutines.Dispatchers
 
@@ -49,18 +50,4 @@ fun LoginScreen(
     }
 }
 
-@Composable
-fun ButtonWithText(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = modifier
-            .padding(20.dp, 5.dp)
-    ) {
 
-        Text(
-            text,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(15.dp, 0.dp)
-        )
-    }
-}
