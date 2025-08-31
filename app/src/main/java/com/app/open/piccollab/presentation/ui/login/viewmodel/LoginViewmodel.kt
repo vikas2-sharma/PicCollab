@@ -1,5 +1,7 @@
 package com.app.open.piccollab.presentation.ui.login.viewmodel
 
+import android.app.Activity
+import android.app.PendingIntent
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -31,6 +33,19 @@ class LoginViewmodel : ViewModel() {
                         _userDataFlow.value = userData
                     }
                 }
+        }
+    }
+
+    fun startDrivePermission(activity: Activity, launchIntent: (PendingIntent) -> Unit) {
+        Log.d(
+            TAG,
+            "startDrivePermission() called with: activity = $activity, launchIntent = $launchIntent"
+        )
+        viewModelScope.launch {
+            AuthManager.getDrivePermission(
+                activity = activity,
+                launchIntent = launchIntent
+            )
         }
     }
 }
