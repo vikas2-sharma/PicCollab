@@ -8,12 +8,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.open.piccollab.core.auth.AuthManager
 import com.app.open.piccollab.core.models.user.UserData
+import com.app.open.piccollab.core.network.module.ApiService
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val TAG = "LoginViewmodel"
-class LoginViewmodel : ViewModel() {
+
+@HiltViewModel
+class LoginViewmodel @Inject constructor(
+    private val apiService: ApiService
+) : ViewModel() {
     private val signingState = MutableStateFlow(false)
     val isSigningIn = signingState.asStateFlow()
 
@@ -23,16 +30,15 @@ class LoginViewmodel : ViewModel() {
 
     fun startSigning(context: Context) {
         viewModelScope.launch {
-            AuthManager.startGoogleAuthentication(context)
-                .collect { userData ->
-                    Log.d(TAG, "startSigning: UserData : ")
-                    if (userData == null || userData.id?.isEmpty() == true) {
-                        signingState.value = false
-                    }else{
-                        signingState.value = true
-                        _userDataFlow.value = userData
-                    }
+            AuthManager.startGoogleAuthentication(context).collect { userData ->
+                Log.d(TAG, "startSigning: UserData : $userData")
+                if (userData == null || userData.id?.isEmpty() == true) {
+                    signingState.value = false
+                } else {
+                    signingState.value = true
+                    _userDataFlow.value = userData
                 }
+            }
         }
     }
 
@@ -43,9 +49,21 @@ class LoginViewmodel : ViewModel() {
         )
         viewModelScope.launch {
             AuthManager.getDrivePermission(
-                activity = activity,
-                launchIntent = launchIntent
+                activity = activity, launchIntent = launchIntent
             )
+        }
+    }
+
+    fun getUserDriveDetail() {
+        viewModelScope.launch {
+            val queryMap = HashMap<String, String>()
+            queryMap.put("fields", "user,storageQuota")
+            try {
+                val response = apiService.getUserDetails(queryMap)
+                Log.d(TAG, "getUserDriveDetail: $response")
+            } catch (e: Exception) {
+                Log.e(TAG, "getUserDriveDetail: ", e)
+            }
         }
     }
 }
