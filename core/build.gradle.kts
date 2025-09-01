@@ -84,6 +84,10 @@ dependencies {
 
     /*google drive api*/
     implementation(libs.google.api.client.android)
-
     implementation(libs.google.api.services.drive)
+
+    /*Retrofit*/
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
 }
