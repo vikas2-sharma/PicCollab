@@ -1,6 +1,7 @@
 package com.app.open.piccollab.core.models.user
 
 import android.net.Uri
+import com.google.gson.Gson
 
 data class UserData(
     val profilePictureUri: Uri? = null,
@@ -10,4 +11,8 @@ data class UserData(
     val givenName: String? = null,
     val idToken: String? = null,
     val familyName: String? = null,
-)
+){
+    override fun toString(): String {
+        return Gson().toJson(this)
+    }
+}
