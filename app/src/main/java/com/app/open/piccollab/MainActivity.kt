@@ -32,7 +32,9 @@ import com.app.open.piccollab.presentation.ui.login.LoginScreen
 import com.app.open.piccollab.presentation.ui.login.viewmodel.LoginViewmodel
 import com.app.open.piccollab.presentation.ui.profile.ProfileScreen
 import com.app.open.piccollab.ui.theme.PicCollabTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
