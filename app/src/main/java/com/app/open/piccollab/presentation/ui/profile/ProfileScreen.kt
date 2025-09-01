@@ -67,8 +67,25 @@ fun ProfileScreen(
         UserDetailRow(modifier, viewModel)
 
         DriveDataPanel(viewModel, driveLauncher)
+
+        DriveDetailButton(viewModel)
+
     }
 }
+
+
+@Composable
+private fun DriveDetailButton(
+    viewModel: LoginViewmodel,
+) {
+    ButtonWithText(
+        text = "Drive Detail"
+    ) {
+        Log.d(TAG, "ProfileScreen: Drive Permission")
+        viewModel.getUserDriveDetail()
+    }
+}
+
 
 @Composable
 private fun DriveDataPanel(
