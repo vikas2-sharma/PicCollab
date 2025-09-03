@@ -11,6 +11,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.NoCredentialException
 import com.app.open.piccollab.core.models.user.UserData
+import com.app.open.piccollab.core.network.module.RestApiManager
 import com.app.open.piccollab.core.utils.WEB_CLIENT_ID
 import com.google.android.gms.auth.api.identity.AuthorizationRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -18,6 +19,7 @@ import com.google.android.gms.common.api.Scope
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.api.services.drive.DriveScopes
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -26,7 +28,7 @@ import java.util.UUID
 
 private const val TAG = "AuthManager"
 
-object AuthManager {
+class AuthManager {
     fun startGoogleAuthentication(context: Context): Flow<UserData?> {
         return flow {
             try {
@@ -94,16 +96,20 @@ object AuthManager {
         Identity.getAuthorizationClient(activity)
             .authorize(authorizationRequest)
             .addOnSuccessListener { authorizationResult ->
+                Log.d(
+                    TAG,
+                    "getDrivePermission: authorizationResult: ${Gson().toJson(authorizationResult)}"
+                )
+                Log.d(TAG, "getDrivePermission: access token: ${authorizationResult.accessToken}")
+                Log.d(TAG, "getDrivePermission: result authorizationResult: $authorizationResult")
+
+                RestApiManager.accessToken = authorizationResult.accessToken
                 if (authorizationResult.hasResolution()) {
                     val pendingIntent = authorizationResult.pendingIntent
                     // Access needs to be granted by the user
                     if (pendingIntent != null) {
                         launchIntent(pendingIntent)
                     }
-                    /*
-                    startAuthorizationIntent.launch(
-                        IntentSenderRequest.Builder(pendingIntent!!.intentSender).build()
-                    )*/
                 } else {
                     Log.d(
                         TAG,
