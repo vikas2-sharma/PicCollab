@@ -126,4 +126,7 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     // If you want to additionally use the CameraX VideoCapture library
     implementation(libs.androidx.camera.video)
+
+    /*navigation*/
+    implementation(libs.androidx.navigation.compose)
 }
