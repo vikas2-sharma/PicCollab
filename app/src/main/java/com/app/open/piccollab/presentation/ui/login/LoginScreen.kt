@@ -7,15 +7,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.open.piccollab.presentation.common.ButtonWithText
 import com.app.open.piccollab.presentation.ui.login.viewmodel.LoginViewmodel
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +23,8 @@ private const val TAG = "LoginScreen"
 fun LoginScreen(
     context:Context ,
     modifier: Modifier = Modifier,
-    viewmodel: LoginViewmodel = viewModel()
+    viewmodel: LoginViewmodel = hiltViewModel(),
+    navigateToProfile : ()-> Unit
 
     ) {
     rememberCoroutineScope { Dispatchers.IO }
@@ -43,7 +41,8 @@ fun LoginScreen(
                     modifier = modifierInternal.align(Alignment.CenterHorizontally)
                 ) {
                     Log.d(TAG, "LoginScreen: login button")
-                    viewmodel.startSigning(context)
+                    navigateToProfile()
+                    /*viewmodel.startSigning(context)*/
                 }
             }
         }

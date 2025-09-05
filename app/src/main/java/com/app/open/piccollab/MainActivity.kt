@@ -7,16 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -25,11 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.app.open.piccollab.presentation.common.BottomNavigation
+import com.app.open.piccollab.presentation.route.Login
+import com.app.open.piccollab.presentation.route.Profile
 import com.app.open.piccollab.presentation.ui.login.LoginScreen
-import com.app.open.piccollab.presentation.ui.login.viewmodel.LoginViewmodel
 import com.app.open.piccollab.presentation.ui.profile.ProfileScreen
 import com.app.open.piccollab.ui.theme.PicCollabTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,19 +68,29 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(
     context: Context,
     modifier: Modifier = Modifier,
-    viewmodel: LoginViewmodel = viewModel<LoginViewmodel>()
 ) {
     /*check success state*/
-    val isLoginSuccessful = viewmodel.isSigningIn.collectAsStateWithLifecycle()
-    if (isLoginSuccessful.value) {
-        /*login success */
-        ProfileScreen(modifier)
-    } else {
-        /*login not yet*/
-        LoginScreen(context, modifier = modifier)
+
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = Login,
+/*        enterTransition = { slideInHorizontally() },
+        exitTransition = { slideOutHorizontally() }*/
+    ) {
+        composable<Login> {
+            LoginScreen(
+                context, modifier = modifier,
+                navigateToProfile = {
+                    navController.navigate(Profile)
+                })
+        }
+        composable<Profile> {
+            ProfileScreen(modifier)
+        }
     }
 }
-
 
 
 @Preview(showBackground = true)
