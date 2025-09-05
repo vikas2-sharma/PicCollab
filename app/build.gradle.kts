@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -108,6 +109,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+
+    implementation(libs.kotlinx.serialization.json)
     /*Coil*/
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
@@ -129,4 +133,8 @@ dependencies {
 
     /*navigation*/
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+
+
 }
