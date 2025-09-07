@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,13 +37,18 @@ fun LoginScreen(
         ) {
             val modifierInternal = Modifier.padding(20.dp, 10.dp)
             Column (modifier = Modifier.fillMaxWidth()) {
+                val ss = viewmodel.isSigningIn.collectAsState()
+                if (ss.value){
+                    navigateToProfile()
+                }
                 ButtonWithText(
                     text = "Login with Google",
                     modifier = modifierInternal.align(Alignment.CenterHorizontally)
                 ) {
+
                     Log.d(TAG, "LoginScreen: login button")
-                    navigateToProfile()
-                    /*viewmodel.startSigning(context)*/
+//                    navigateToProfile()
+                    viewmodel.startSigning(context)
                 }
             }
         }

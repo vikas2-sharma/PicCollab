@@ -4,9 +4,12 @@ import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.open.piccollab.core.auth.AuthManager
+import com.app.open.piccollab.core.db.entities.User
+import com.app.open.piccollab.core.db.repositories.UserRepository
 import com.app.open.piccollab.core.models.user.UserData
 import com.app.open.piccollab.core.network.module.RestApiManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +23,8 @@ private const val TAG = "LoginViewmodel"
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
     private val restApiManager: RestApiManager,
-    private val authManager: AuthManager
+    private val authManager: AuthManager,
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val signingState = MutableStateFlow(false)
     val isSigningIn = signingState.asStateFlow()
@@ -28,6 +32,24 @@ class LoginViewmodel @Inject constructor(
     private val _userDataFlow = MutableStateFlow<UserData?>(null)
     val userDataFlow = _userDataFlow.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            val userDetails = userRepository.getUserLoginDetails()
+            if (userDetails != null) {
+                signingState.value = true
+                _userDataFlow.value = UserData(
+                    profilePictureUri = userDetails.profilePictureUri.toUri(),
+                    displayName = userDetails.displayName,
+                    phoneNumber = userDetails.phoneNumber,
+                    id = userDetails.id,
+                    givenName = userDetails.givenName,
+                    idToken = userDetails.idToken,
+                    familyName = userDetails.familyName,
+                )
+            }
+
+        }
+    }
 
     fun startSigning(context: Context) {
         viewModelScope.launch {
@@ -38,6 +60,17 @@ class LoginViewmodel @Inject constructor(
                 } else {
                     signingState.value = true
                     _userDataFlow.value = userData
+                    userRepository.setUserLoginDetails(
+                        User(
+                            profilePictureUri = userData.profilePictureUri.toString(),
+                            displayName = userData.displayName ?: "",
+                            phoneNumber = userData.phoneNumber ?: "",
+                            id = userData.id ?: "",
+                            givenName = userData.givenName ?: "",
+                            idToken = userData.idToken ?: "",
+                            familyName = userData.familyName ?: "",
+                        )
+                    )
                 }
             }
         }
