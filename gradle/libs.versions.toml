@@ -4,6 +4,7 @@ cameraCore = "1.4.2"
 coilCompose = "3.3.0"
 converterGson = "3.0.0"
 credentials = "1.5.0"
+datastorePreferences = "1.1.7"
 googleApiClientAndroid = "2.8.0"
 googleApiServicesDrive = "v3-rev197-1.25.0"
 googleid = "1.1.1"
@@ -37,6 +38,7 @@ androidx-camera-video = { module = "androidx.camera:camera-video", version.ref =
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelKtx" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
