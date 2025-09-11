@@ -10,6 +10,7 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.NoCredentialException
+import com.app.open.piccollab.core.db.datastore.DataStorePref
 import com.app.open.piccollab.core.models.user.UserData
 import com.app.open.piccollab.core.network.module.RestApiManager
 import com.app.open.piccollab.core.utils.WEB_CLIENT_ID
@@ -20,15 +21,20 @@ import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.api.services.drive.DriveScopes
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
 import java.security.MessageDigest
 import java.util.UUID
 
 private const val TAG = "AuthManager"
 
-class AuthManager {
+class AuthManager(private val dataStorePref: DataStorePref) {
     fun startGoogleAuthentication(context: Context): Flow<UserData?> {
         return flow {
             try {
@@ -92,18 +98,10 @@ class AuthManager {
         val authorizationRequest: AuthorizationRequest = AuthorizationRequest.Builder()
             .setRequestedScopes(requestedScopes)
             .build()
-
         Identity.getAuthorizationClient(activity)
             .authorize(authorizationRequest)
             .addOnSuccessListener { authorizationResult ->
-                Log.d(
-                    TAG,
-                    "getDrivePermission: authorizationResult: ${Gson().toJson(authorizationResult)}"
-                )
-                Log.d(TAG, "getDrivePermission: access token: ${authorizationResult.accessToken}")
-                Log.d(TAG, "getDrivePermission: result authorizationResult: $authorizationResult")
 
-                RestApiManager.accessToken = authorizationResult.accessToken
                 if (authorizationResult.hasResolution()) {
                     val pendingIntent = authorizationResult.pendingIntent
                     // Access needs to be granted by the user
@@ -115,6 +113,36 @@ class AuthManager {
                         TAG,
                         "getDrivePermission: Access was previously granted, continue with user action"
                     )
+                    Log.d(
+                        TAG,
+                        "getDrivePermission: authorizationResult: ${
+                            Gson().toJson(
+                                authorizationResult
+                            )
+                        }"
+                    )
+                    Log.d(
+                        TAG,
+                        "getDrivePermission: access token: ${authorizationResult.accessToken}"
+                    )
+                    Log.d(
+                        TAG,
+                        "getDrivePermission: result authorizationResult: $authorizationResult"
+                    )
+
+                    RestApiManager.accessToken = authorizationResult.accessToken
+                    CoroutineScope(Dispatchers.IO).launch {
+                        dataStorePref.setAccessToken(
+                            authorizationResult.accessToken ?: ""
+                        )
+
+                        delay(1000)
+                        dataStorePref.getAccessToken().collect { accessToken ->
+                            Log.d(TAG, "getDrivePermission: accessTokenSaved: $accessToken")
+                        }
+
+
+                    } //how to call this suspend method
                     // Access was previously granted, continue with user action
                     /*saveToDriveAppFolder(authorizationResult);*/
                 }

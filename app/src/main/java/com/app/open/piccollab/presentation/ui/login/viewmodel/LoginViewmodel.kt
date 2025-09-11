@@ -8,8 +8,8 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.open.piccollab.core.auth.AuthManager
-import com.app.open.piccollab.core.db.entities.User
-import com.app.open.piccollab.core.db.repositories.UserRepository
+import com.app.open.piccollab.core.db.room.entities.User
+import com.app.open.piccollab.core.db.room.repositories.UserRepository
 import com.app.open.piccollab.core.models.user.UserData
 import com.app.open.piccollab.core.network.module.RestApiManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +36,6 @@ class LoginViewmodel @Inject constructor(
         viewModelScope.launch {
             val userDetails = userRepository.getUserLoginDetails()
             if (userDetails != null) {
-                signingState.value = true
                 _userDataFlow.value = UserData(
                     profilePictureUri = userDetails.profilePictureUri.toUri(),
                     displayName = userDetails.displayName,
