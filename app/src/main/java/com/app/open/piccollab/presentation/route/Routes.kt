@@ -10,6 +10,9 @@ object Login
 object Profile
 
 @Serializable
+object Loading
+
+@Serializable
 object Search
 
 @Serializable
