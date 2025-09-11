@@ -1,11 +1,11 @@
-package com.app.open.piccollab.core.db.dao
+package com.app.open.piccollab.core.db.room.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.app.open.piccollab.core.db.entities.User
+import com.app.open.piccollab.core.db.room.entities.User
 
 @Dao
 interface UserDao {

@@ -1,11 +1,11 @@
-package com.app.open.piccollab.core.db.database
+package com.app.open.piccollab.core.db.room.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.app.open.piccollab.core.db.dao.UserDao
-import com.app.open.piccollab.core.db.entities.User
+import com.app.open.piccollab.core.db.room.dao.UserDao
+import com.app.open.piccollab.core.db.room.entities.User
 
 
 @Database(entities = [User::class], version = 1, exportSchema = false)

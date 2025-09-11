@@ -1,9 +1,8 @@
-package com.app.open.piccollab.core.db.repositories
+package com.app.open.piccollab.core.db.room.repositories
 
 import android.util.Log
-import com.app.open.piccollab.core.db.dao.UserDao
-import com.app.open.piccollab.core.db.entities.User
-import javax.inject.Inject
+import com.app.open.piccollab.core.db.room.dao.UserDao
+import com.app.open.piccollab.core.db.room.entities.User
 
 private const val TAG = "UserRepository"
 class UserRepository(private val userDao: UserDao) {
