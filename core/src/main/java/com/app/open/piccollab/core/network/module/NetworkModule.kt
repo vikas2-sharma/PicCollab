@@ -1,6 +1,7 @@
 package com.app.open.piccollab.core.network.module
 
 import com.app.open.piccollab.core.auth.AuthManager
+import com.app.open.piccollab.core.db.datastore.DataStorePref
 import com.app.open.piccollab.core.network.module.apiservices.DriveApiService
 import dagger.Module
 import dagger.Provides
@@ -37,7 +38,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun providesAuthManager(): AuthManager{
-        return AuthManager()
+    fun providesAuthManager(dataStorePref: DataStorePref): AuthManager{
+        return AuthManager(dataStorePref)
     }
 }
