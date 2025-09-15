@@ -4,8 +4,11 @@ import android.app.Activity
 import android.util.Log
 import android.widget.TextView
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,9 +43,31 @@ private const val TAG = "ProfileScreen"
 
 @Composable
 fun ProfileScreen(
-    modifier: Modifier = Modifier, viewModel: LoginViewmodel = hiltViewModel()
+    modifier: Modifier = Modifier, viewModel: LoginViewmodel = hiltViewModel(),
+    profileViewmodel: ProfileViewmodel = hiltViewModel()
 ) {
 
+    val driveLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            Log.d(TAG, "ProfileScreen: onDrivePermissionGranted")
+            /*viewModel.onDrivePermissionGranted()*/
+        } else {
+            /*viewModel.onDrivePermissionDenied()*/
+            Log.d(TAG, "ProfileScreen: onDrivePermissionDenied")
+        }
+    }
+
+    val activity = LocalContext.current as Activity
+
+    LaunchedEffect(Unit) {
+        viewModel.startDrivePermission(activity) { pendingIntent ->
+            val request = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
+            driveLauncher.launch(request)
+        }
+    }
+    val context = LocalContext.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -49,8 +75,23 @@ fun ProfileScreen(
             .fillMaxSize(),
     ) {
 
-        UserDetailRow(modifier, viewModel)
+        val pickMedia =
+            rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
+                Log.d(TAG, "ProfileScreen: selected files list size: ${uris.size}")
+                uris.forEach { uri ->
+                    profileViewmodel.uploadFile(context, uri)
 
+                }
+            }
+
+        UserDetailRow(modifier, viewModel)
+        /*ButtonWithText("Upload") {
+            profileViewmodel.uploadFile(context)
+        }*/
+
+        ButtonWithText("Select Image") {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
     }
 }
 
