@@ -5,8 +5,9 @@ coilCompose = "3.3.0"
 converterGson = "3.0.0"
 credentials = "1.5.0"
 datastorePreferences = "1.1.7"
-googleApiClientAndroid = "2.8.0"
-googleApiServicesDrive = "v3-rev197-1.25.0"
+googleApiClientAndroid = "2.8.1"
+googleApiClientGson = "2.8.1"
+googleApiServicesDrive = "v3-rev20250829-2.0.0"
 googleid = "1.1.1"
 hiltAndroid = "2.56.2"
 hiltAndroidCompiler = "2.56.2"
@@ -50,6 +51,7 @@ coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCo
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 google-api-client-android = { module = "com.google.api-client:google-api-client-android", version.ref = "googleApiClientAndroid" }
+google-api-client-gson = { module = "com.google.api-client:google-api-client-gson", version.ref = "googleApiClientGson" }
 google-api-services-drive = { module = "com.google.apis:google-api-services-drive", version.ref = "googleApiServicesDrive" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
