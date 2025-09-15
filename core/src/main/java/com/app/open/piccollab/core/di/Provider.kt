@@ -3,6 +3,7 @@ package com.app.open.piccollab.core.di
 import android.content.Context
 import com.app.open.piccollab.core.db.datastore.DataStorePref
 import com.app.open.piccollab.core.db.room.database.UserDatabase
+import com.app.open.piccollab.core.network.upload.FileUploader
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,6 +25,10 @@ class Provider {
     @Singleton
     @Provides
     fun providesDataStore(@ApplicationContext context: Context) = DataStorePref(context)
+
+    @Singleton
+    @Provides
+    fun providesFileUploader(@ApplicationContext context: Context, dataStorePref: DataStorePref) = FileUploader(context)
 
 
 }
