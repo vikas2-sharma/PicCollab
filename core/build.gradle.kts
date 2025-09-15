@@ -40,6 +40,7 @@ android {
             excludes += "META-INF/LICENSE.txt"
             excludes += "META-INF/NOTICE"
             excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/INDEX.LIST"
         }
     }
 }
@@ -84,7 +85,11 @@ dependencies {
 
     /*google drive api*/
     implementation(libs.google.api.client.android)
-    implementation(libs.google.api.services.drive)
+    implementation(libs.google.api.services.drive){
+        exclude(group = "com.google.api-client", module = "google-api-client")
+    }
+    /*gson*/
+    implementation(libs.google.api.client.gson)
 
     /*Retrofit*/
     implementation(libs.retrofit)
