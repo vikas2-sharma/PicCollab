@@ -79,8 +79,7 @@ fun ProfileScreen(
             rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
                 Log.d(TAG, "ProfileScreen: selected files list size: ${uris.size}")
                 uris.forEach { uri ->
-                    profileViewmodel.uploadFile(context, uri)
-
+                    /*profileViewmodel.uploadFile(context, uri)*/
                 }
             }
 
