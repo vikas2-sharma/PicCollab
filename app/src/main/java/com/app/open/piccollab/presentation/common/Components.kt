@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -44,13 +45,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.open.piccollab.R
 import com.app.open.piccollab.core.models.event.NewEventItem
+import com.app.open.piccollab.presentation.route.Home
+import com.app.open.piccollab.presentation.route.Profile
+import com.app.open.piccollab.presentation.route.Search
 
 @Composable
-fun BottomNavigation() {
+fun BottomNavigation(
+    selectedRoute : String,
+    navigateToHome: ()-> Unit,
+    navigateToProfile: ()-> Unit
+) {
     NavigationBar {
         NavigationBarItem(
-            selected = true,
-            onClick = { /*TODO*/ },
+            selected = selectedRoute == Home::class.qualifiedName,
+            onClick = { navigateToHome() },
             icon = {
                 Icon(
                     imageVector = Icons.Default.Home,
@@ -60,7 +68,7 @@ fun BottomNavigation() {
 
             )
         NavigationBarItem(
-            selected = false,
+            selected = selectedRoute == Search::class.qualifiedName,
             onClick = { /*TODO*/ },
             icon = {
                 Icon(
@@ -71,8 +79,8 @@ fun BottomNavigation() {
 
             )
         NavigationBarItem(
-            selected = false,
-            onClick = { /*TODO*/ },
+            selected = selectedRoute == Profile::class.qualifiedName,
+            onClick = { navigateToProfile() },
             icon = {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
@@ -82,7 +90,7 @@ fun BottomNavigation() {
 
             )
         NavigationBarItem(
-            selected = false,
+            selected = selectedRoute == Search::class.qualifiedName,
             onClick = { /*TODO*/ },
             icon = {
                 Icon(
@@ -116,6 +124,7 @@ fun ButtonWithText(text: String, modifier: Modifier = Modifier, onClick: () -> U
 @Composable
 fun EventFolderCard(eventName: String) {
     Card(
+        onClick = {},
         modifier = Modifier
             .aspectRatio(1.5f)
     ) {
@@ -143,12 +152,13 @@ fun EventFolderCard(eventName: String) {
 
                     )
                 }
-                Image(
+                Icon(
                     painterResource(R.drawable.ic_folder_24),
                     contentDescription = "options",
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
