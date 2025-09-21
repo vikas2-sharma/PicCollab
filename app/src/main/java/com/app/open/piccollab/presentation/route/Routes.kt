@@ -13,6 +13,9 @@ object Profile
 object Loading
 
 @Serializable
+object Home
+
+@Serializable
 object Search
 
 @Serializable
