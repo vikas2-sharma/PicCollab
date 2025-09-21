@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -97,7 +98,7 @@ class MainActivity : ComponentActivity() {
                                 titleContentColor = MaterialTheme.colorScheme.primary,
                             ),
                             title = {
-                                Text(text = "PicCollab")
+                                Text(text = "PicCollab" , fontWeight = FontWeight.ExtraBold)
                             }
                         )
                     },
