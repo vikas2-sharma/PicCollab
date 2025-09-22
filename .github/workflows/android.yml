@@ -38,4 +38,4 @@ jobs:
 
       # 3. Build
       - name: Build Release
-        run: ./gradlew assembleDebug
+        run: ./gradlew assemble
