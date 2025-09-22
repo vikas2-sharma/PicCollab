@@ -1,6 +1,6 @@
 package com.app.open.piccollab.presentation.common
 
-import androidx.compose.foundation.Image
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,9 +25,12 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -43,6 +46,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.app.open.piccollab.R
 import com.app.open.piccollab.core.models.event.NewEventItem
 import com.app.open.piccollab.presentation.route.Home
@@ -51,9 +57,9 @@ import com.app.open.piccollab.presentation.route.Search
 
 @Composable
 fun BottomNavigation(
-    selectedRoute : String,
-    navigateToHome: ()-> Unit,
-    navigateToProfile: ()-> Unit
+    selectedRoute: String,
+    navigateToHome: () -> Unit,
+    navigateToProfile: () -> Unit
 ) {
     NavigationBar {
         NavigationBarItem(
@@ -168,84 +174,115 @@ fun EventFolderCard(eventName: String) {
 
 
 @Composable
-fun CreateNewEventCard(onSubmit: (newEventItem: NewEventItem) -> Unit) {
+fun CreateNewEventCard(onCancel: () -> Unit, onSubmit: (newEventItem: NewEventItem) -> Unit) {
     var eventName by remember { mutableStateOf("") }
     var eventDescription by remember { mutableStateOf("") }
-
     var isEventNameError by remember { mutableStateOf(false) }
-    Card {
-        Box(
-            modifier = Modifier
-                .padding(15.dp)
-        ) {
-            Column {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Create New Event",
-                        modifier = Modifier.weight(1f)
-                    )
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "close dialog"
-                    )
-                }
-                TextField(
-                    value = eventName,
-                    onValueChange = { newValue: String ->
-                        isEventNameError = false
-                        eventName = newValue
-                    },
-                    placeholder = {
-                        Text(text = "Enter Event Name")
-                    },
-                    label = {
-                        Text(text = "Event Name")
-                    },
-                    maxLines = 1,
-                    isError = isEventNameError,
-                    supportingText = {
-                        if (isEventNameError) {
-                            Text("event name can not be empty")
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    modifier = Modifier.fillMaxWidth()
+
+    fun validateAndSubmit() {
+        if (eventName.isBlank()) {
+            isEventNameError = true
+        } else {
+            isEventNameError = false
+            onSubmit(
+                NewEventItem(
+                    eventName = eventName,
+                    eventDescription = eventDescription
                 )
+            )
+        }
+    }
 
-                Spacer(Modifier.height(12.dp))
-                TextField(
-                    value = eventDescription,
-                    onValueChange = { newValue: String -> eventDescription = newValue },
-                    placeholder = {
-                        Text(text = "Enter Event Name")
-                    },
-                    label = {
-                        Text(text = "Event Name")
-                    },
-                    maxLines = 1,
-                    keyboardActions = KeyboardActions(onDone = {
+    Dialog(onDismissRequest = onCancel) {
 
-                        if (eventName.isBlank()) {
-                            isEventNameError = true
-                        } else {
-                            isEventNameError = false
-                            onSubmit(
-                                NewEventItem(
-                                    eventName = eventName,
-                                    eventDescription = eventDescription
-                                )
+        Card {
+            Box(
+                modifier = Modifier
+                    .padding(32.dp)
+            ) {
+                Column {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Create New Event",
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.weight(1f)
+                        )
+                        IconButton(onCancel) {
+
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "close dialog"
                             )
                         }
-                    }),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedTextField(
+                        value = eventName,
+                        onValueChange = { newValue: String ->
+                            isEventNameError = false
+                            eventName = newValue
+                        },
+                        placeholder = {
+                            Text(text = "Enter Event Name")
+                        },
+                        label = {
+                            Text(text = "Event Name")
+                        },
+                        maxLines = 1,
+                        isError = isEventNameError,
+                        supportingText = {
+                            if (isEventNameError) {
+                                Text("event name can not be empty")
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
+                    Spacer(Modifier.height(5.dp))
+                    OutlinedTextField(
+                        value = eventDescription,
+                        onValueChange = { newValue: String -> eventDescription = newValue },
+                        placeholder = {
+                            Text(text = "Enter Event Description")
+                        },
+                        label = {
+                            Text(text = "Event Description")
+                        },
+                        maxLines = 1,
+                        keyboardActions = KeyboardActions(onDone = {
 
+                            validateAndSubmit()
+                        }),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        OutlinedButton(onClick = {
+                            eventName = ""
+                            eventDescription = ""
+                            isEventNameError = false
+                            onCancel()
+                        }) {
+                            Text("Cancel")
+                        }
+                        Button(onClick = {
+                            validateAndSubmit()
+                        }) {
+                            Text("Create")
+                        }
+                    }
+
+                }
             }
         }
     }
@@ -258,6 +295,9 @@ fun ComponentPreview() {
     Column {
 
         Spacer(Modifier.height(30.dp))
-        CreateNewEventCard {}
+        CreateNewEventCard(
+            onCancel = {},
+            onSubmit = {}
+        )
     }
 }
