@@ -8,19 +8,31 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: set up JDK 11
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: gradle
+      - uses: actions/checkout@v3
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # 1. Decode keystore (binary .jks)
+      - name: Decode Keystore
+        run: |
+          mkdir -p keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore/keystore.jks
+
+      # 2. Create keystore.properties file
+      - name: Create keystore.properties
+        run: |
+          echo "storeFile=keystore/keystore.jks" >> keystore/keystore.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore/keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> keystore/keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore/keystore.properties
+
+      # 3. Build
+      - name: Build Release
+        run: ./gradlew assembleDebug
