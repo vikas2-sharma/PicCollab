@@ -31,7 +31,7 @@ jobs:
       # 2. Create keystore.properties file
       - name: Create keystore.properties
         run: |
-          echo "storeFile=keystore/keystore.jks" >> keystore/keystore.properties
+          echo "storeFile=${{ github.workspace }}/keystore/keystore.jks" >> keystore/keystore.properties
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore/keystore.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> keystore/keystore.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore/keystore.properties
