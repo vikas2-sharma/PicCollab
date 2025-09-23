@@ -14,11 +14,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -70,39 +68,22 @@ class MainActivity : ComponentActivity() {
                 }
                 Scaffold(
                     floatingActionButton = {
-                        when (currentRoute) {
-                            Home::class.qualifiedName -> {
-                                FloatingActionButton({ Log.d(TAG, "onCreate: fab") }) {
-                                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                                }
+                        FloatingActionButtonByRoutes(currentRoute)
+                    }, bottomBar = {
+                        BottomNavigation(selectedRoute = currentRoute, navigateToHome = {
+                            navController.navigate(Home) {
+                                popUpTo(Home) { inclusive = true }
                             }
-
-                            else -> {}
-                        }
-                    },
-                    bottomBar = {
-                        BottomNavigation(
-                            selectedRoute = currentRoute,
-                            navigateToHome = {
-                                navController.navigate(Home) {
-                                    popUpTo(Home) { inclusive = true }
-                                }
-                            },
-                            navigateToProfile = { navController.navigate(Profile) }
-                        )
-                    },
-                    topBar = {
+                        }, navigateToProfile = { navController.navigate(Profile) })
+                    }, topBar = {
                         TopAppBar(
-                            colors = TopAppBarDefaults.topAppBarColors(
+                            /*colors = TopAppBarDefaults.topAppBarColors(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 titleContentColor = MaterialTheme.colorScheme.primary,
-                            ),
-                            title = {
-                                Text(text = "PicCollab" , fontWeight = FontWeight.ExtraBold)
-                            }
-                        )
-                    },
-                    modifier = Modifier.fillMaxSize()
+                            ),*/ title = {
+                                Text(text = "PicCollab", fontWeight = FontWeight.ExtraBold)
+                            })
+                    }, modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     val context = LocalContext.current
                     MainScreen(
@@ -114,6 +95,21 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun FloatingActionButtonByRoutes(currentRoute: String) {
+    when (currentRoute) {
+        Home::class.qualifiedName -> {
+            FloatingActionButton({
+                Log.d(TAG, "onCreate: fab")
+            }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+            }
+        }
+
+        else -> {}
     }
 }
 
