@@ -3,7 +3,7 @@ package com.app.open.piccollab.core.di
 import android.content.Context
 import com.app.open.piccollab.core.db.datastore.DataStorePref
 import com.app.open.piccollab.core.db.room.database.UserDatabase
-import com.app.open.piccollab.core.network.upload.FileUploader
+import com.app.open.piccollab.core.network.module.drive.DriveManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +28,8 @@ class Provider {
 
     @Singleton
     @Provides
-    fun providesFileUploader(@ApplicationContext context: Context, dataStorePref: DataStorePref) = FileUploader(context)
+    fun providesDriveManager(@ApplicationContext context: Context, dataStorePref: DataStorePref) =
+        DriveManager(context, dataStorePref)
 
 
 }
