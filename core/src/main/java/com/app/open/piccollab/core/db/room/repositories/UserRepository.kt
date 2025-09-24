@@ -16,4 +16,8 @@ class UserRepository(private val userDao: UserDao) {
         Log.d(TAG, "setUserLoginDetails() called with: user = $user")
         userDao.insertUser(user)
     }
+
+    suspend fun removeAllUser(){
+        userDao.removeUser()
+    }
 }

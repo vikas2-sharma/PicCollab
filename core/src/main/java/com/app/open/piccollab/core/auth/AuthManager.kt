@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 import java.security.MessageDigest
 import java.util.UUID
 
@@ -150,6 +149,11 @@ class AuthManager(private val dataStorePref: DataStorePref) {
             .addOnFailureListener { e -> Log.e(TAG, "Failed to authorize", e) }
     }
 
+    fun logout(activity: Activity){
+        val signInClient = Identity.getSignInClient(activity)
+        // This clears the account and forces re-consent next time
+        signInClient.signOut()
+    }
 
 }
 

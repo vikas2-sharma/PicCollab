@@ -1,8 +1,10 @@
 package com.app.open.piccollab.presentation.ui.profile
 
+import android.app.Activity
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.open.piccollab.core.auth.AuthManager
 import com.app.open.piccollab.core.db.datastore.DataStorePref
 import com.app.open.piccollab.core.db.room.repositories.UserRepository
 import com.app.open.piccollab.core.network.module.drive.DriveManager
@@ -18,6 +20,7 @@ private const val TAG = "ProfileViewmodel"
 class ProfileViewmodel @Inject constructor(
     private val userRepository: UserRepository,
     private val dataStorePref: DataStorePref,
+    private val authManager: AuthManager,
     private val driveManager: DriveManager
 ) : ViewModel() {
 
@@ -36,6 +39,14 @@ class ProfileViewmodel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val folderId = driveManager.createFolder(folderName)
             Log.d(TAG, "createFolder: $folderId")
+        }
+    }
+
+    fun logout(activity: Activity){
+        viewModelScope.launch {
+            dataStorePref.clearAllData()
+            userRepository.removeAllUser()
+            authManager.logout(activity = activity)
         }
     }
 

@@ -88,8 +88,8 @@ fun ProfileScreen(
             profileViewmodel.uploadFile(context)
         }*/
 
-        ButtonWithText("Select Image") {
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        ButtonWithText("Logout") {
+            profileViewmodel.logout(context as Activity)
         }
     }
 }
