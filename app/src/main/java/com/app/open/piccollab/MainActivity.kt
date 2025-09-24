@@ -62,6 +62,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route ?: ""
+                val accessToken by dataStorePref.getAccessToken().collectAsState(initial = null)
 
                 LaunchedEffect(navBackStackEntry) {
                     Log.d(TAG, "onCreate: currentDestination2: $currentRoute")
@@ -70,11 +71,13 @@ class MainActivity : ComponentActivity() {
                     floatingActionButton = {
                         FloatingActionButtonByRoutes(currentRoute)
                     }, bottomBar = {
-                        BottomNavigation(selectedRoute = currentRoute, navigateToHome = {
-                            navController.navigate(Home) {
-                                popUpTo(Home) { inclusive = true }
-                            }
-                        }, navigateToProfile = { navController.navigate(Profile) })
+                        if (!accessToken.isNullOrEmpty()){
+                            BottomNavigation(selectedRoute = currentRoute, navigateToHome = {
+                                navController.navigate(Home) {
+                                    popUpTo(Home) { inclusive = true }
+                                }
+                            }, navigateToProfile = { navController.navigate(Profile) })
+                        }
                     }, topBar = {
                         TopAppBar(
                             /*colors = TopAppBarDefaults.topAppBarColors(
@@ -90,7 +93,8 @@ class MainActivity : ComponentActivity() {
                         context = context,
                         modifier = Modifier.padding(innerPadding),
                         dataStorePref = dataStorePref,
-                        navController = navController
+                        navController = navController,
+                        accessToken = accessToken
                     )
                 }
             }
@@ -118,10 +122,10 @@ fun MainScreen(
     context: Context,
     modifier: Modifier = Modifier,
     dataStorePref: DataStorePref,
-    navController: NavHostController
+    navController: NavHostController,
+    accessToken:String?
 ) {
 
-    val accessToken by dataStorePref.getAccessToken().collectAsState(initial = null)
     LaunchedEffect(accessToken) {
         Log.d(TAG, "MainScreen: tokenValue: $accessToken")
     }
