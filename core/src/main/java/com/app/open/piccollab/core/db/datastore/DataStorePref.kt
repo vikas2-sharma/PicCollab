@@ -55,4 +55,10 @@ class DataStorePref(private val context: Context) {
             preferences[preferencesKey] ?: ""
         }
     }
+
+    suspend fun clearAllData(){
+        context.dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
 }
