@@ -1,7 +1,6 @@
 package com.app.open.piccollab.presentation.ui.profile
 
 import android.app.Activity
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.open.piccollab.core.auth.AuthManager
@@ -32,13 +31,6 @@ class ProfileViewmodel @Inject constructor(
             dataStorePref.getAccessToken().collect { value ->
                 tokenState.value = value
             }
-        }
-    }
-
-    fun createFolder(folderName: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val folderId = driveManager.createFolder(folderName)
-            Log.d(TAG, "createFolder: $folderId")
         }
     }
 
