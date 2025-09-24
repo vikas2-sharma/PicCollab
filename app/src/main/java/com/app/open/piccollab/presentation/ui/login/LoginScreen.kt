@@ -35,13 +35,14 @@ fun LoginScreen(
     rememberCoroutineScope { Dispatchers.IO }
 
     val isSigned by viewmodel.isSigningIn.collectAsState()
-
+    val activity = LocalContext.current as Activity
 
     val driveLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             Log.d(TAG, "ProfileScreen: onDrivePermissionGranted")
+            viewmodel.startDrivePermission(activity) { }
             /*viewModel.onDrivePermissionGranted()*/
         } else {
             /*viewModel.onDrivePermissionDenied()*/
@@ -49,7 +50,6 @@ fun LoginScreen(
         }
     }
 
-    val activity = LocalContext.current as Activity
     LaunchedEffect(isSigned) {
         if (isSigned) {
             Log.d(TAG, "LoginScreen: isSigned")
