@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -64,14 +66,19 @@ class MainActivity : ComponentActivity() {
                 val currentRoute = navBackStackEntry?.destination?.route ?: ""
                 val accessToken by dataStorePref.getAccessToken().collectAsState(initial = null)
 
+                val (fabOnClick, setFabOnClick: ((() -> Unit)?) -> Unit) = remember {
+                    mutableStateOf<(() -> Unit)?>(
+                        null
+                    )
+                }
                 LaunchedEffect(navBackStackEntry) {
                     Log.d(TAG, "onCreate: currentDestination2: $currentRoute")
                 }
                 Scaffold(
                     floatingActionButton = {
-                        FloatingActionButtonByRoutes(currentRoute)
+                        FloatingActionButtonByRoutes(currentRoute, fabOnClick)
                     }, bottomBar = {
-                        if (!accessToken.isNullOrEmpty()){
+                        if (!accessToken.isNullOrEmpty()) {
                             BottomNavigation(selectedRoute = currentRoute, navigateToHome = {
                                 navController.navigate(Home) {
                                     popUpTo(Home) { inclusive = true }
@@ -94,7 +101,8 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         dataStorePref = dataStorePref,
                         navController = navController,
-                        accessToken = accessToken
+                        accessToken = accessToken,
+                        setFabOnClick
                     )
                 }
             }
@@ -103,11 +111,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun FloatingActionButtonByRoutes(currentRoute: String) {
+private fun FloatingActionButtonByRoutes(currentRoute: String, fabOnClick: (() -> Unit)?) {
     when (currentRoute) {
         Home::class.qualifiedName -> {
             FloatingActionButton({
                 Log.d(TAG, "onCreate: fab")
+                fabOnClick?.invoke()
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
@@ -123,7 +132,8 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     dataStorePref: DataStorePref,
     navController: NavHostController,
-    accessToken:String?
+    accessToken: String?,
+    setFabOnClick: ((() -> Unit)?) -> Unit
 ) {
 
     LaunchedEffect(accessToken) {
@@ -147,7 +157,7 @@ fun MainScreen(
             ProfileScreen(modifier)
         }
         composable<Home> {
-            HomeScreen(modifier = modifier)
+            HomeScreen(modifier = modifier, setFabOnClick)
         }
         composable<Loading> {
             LoadingScreen()
