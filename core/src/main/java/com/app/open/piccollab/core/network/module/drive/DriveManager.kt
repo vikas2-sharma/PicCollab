@@ -3,6 +3,7 @@ package com.app.open.piccollab.core.network.module.drive
 import android.content.Context
 import android.util.Log
 import com.app.open.piccollab.core.db.datastore.DataStorePref
+import com.app.open.piccollab.core.models.event.NewEventItem
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
@@ -48,10 +49,11 @@ class DriveManager(private val context: Context, dataStorePref: DataStorePref) {
         }
     }
 
-    fun createFolder(folderName: String): String {
+    fun createFolder(eventItem: NewEventItem): String {
         val file = File()
         file.mimeType = "application/vnd.google-apps.folder"
-        file.name = folderName
+        file.name = eventItem.eventName
+        file.description = eventItem.eventDescription
 
         val outFile = getDriveService().files().create(file).execute()
         Log.d(TAG, "createFolder() returned: id: ${outFile.id}")
