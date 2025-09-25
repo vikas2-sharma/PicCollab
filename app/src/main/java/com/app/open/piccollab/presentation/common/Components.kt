@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -288,6 +289,27 @@ fun CreateNewEventCard(onCancel: () -> Unit, onSubmit: (newEventItem: NewEventIt
     }
 }
 
+/*TODO: to be improved with inline progress*/
+@Composable
+fun ProgressDialog(progressMessage: String) {
+    Dialog(onDismissRequest = {}) {
+        Card {
+            Box(modifier = Modifier
+                .padding(24.dp, 32.dp)
+                .fillMaxWidth()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = progressMessage)
+                }
+            }
+        }
+
+    }
+}
 
 @Preview()
 @Composable
