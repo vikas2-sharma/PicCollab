@@ -28,7 +28,6 @@ import com.app.open.piccollab.presentation.common.ProgressDialog
 
 private const val TAG = "HomeScreen"
 
-@ExperimentalMaterial3Api
 @Composable
 fun HomeScreen(
     modifier: Modifier,
