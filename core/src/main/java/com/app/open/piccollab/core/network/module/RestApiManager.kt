@@ -11,8 +11,6 @@ import javax.inject.Inject
 
 private const val TAG = "RestApiManager"
 
-@InstallIn(SingletonComponent::class)
-@Module
 class RestApiManager @Inject constructor(
     private val driveApiService: DriveApiService
 ) {
