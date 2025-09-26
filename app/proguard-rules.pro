@@ -24,3 +24,16 @@
 -keep class androidx.credentials.playservices.** {
   *;
 }
+
+-keep class com.app.open.piccollab.core.network.module.apiservices.** {*;}
+
+-keep class com.app.open.piccollab.core.models.** {*;}
+-keepattributes Signature
+-keepattributes *Annotation*
+
+# Keep all serializable route objects
+-keep class com.app.open.piccollab.presentation.route.** { *; }
+-keepclassmembers class com.app.open.piccollab.presentation.route.** {
+    <fields>;
+    <init>(...);
+}
