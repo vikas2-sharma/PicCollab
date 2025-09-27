@@ -1,6 +1,8 @@
 package com.app.open.piccollab.core.db.room
 
+import com.app.open.piccollab.core.db.room.dao.EventFolderDao
 import com.app.open.piccollab.core.db.room.dao.UserDao
+import com.app.open.piccollab.core.db.room.repositories.EventFolderRepository
 import com.app.open.piccollab.core.db.room.repositories.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -16,6 +18,13 @@ class RepositoryModule {
     @Provides
     fun providesUserRepository(userDao: UserDao): UserRepository {
         return UserRepository(userDao)
+
+    }
+
+    @Singleton
+    @Provides
+    fun providesEventFolderRepository(eventFolderDao: EventFolderDao): EventFolderRepository {
+        return EventFolderRepository(eventFolderDao)
 
     }
 }
