@@ -1,11 +1,14 @@
 package com.app.open.piccollab.presentation.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.open.piccollab.core.db.room.entities.EventFolder
+import com.app.open.piccollab.core.db.room.repositories.EventFolderRepository
 import com.app.open.piccollab.core.models.event.NewEventItem
-import com.app.open.piccollab.core.network.module.drive.DriveManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +24,9 @@ sealed class LoadingState {
 }
 
 @HiltViewModel
-class HomeViewmodel @Inject constructor(private val driveManager: DriveManager) : ViewModel() {
+class HomeViewmodel @Inject constructor(
+    private val eventFolderRepository: EventFolderRepository
+) : ViewModel() {
 
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Idle)
     val loadingState: StateFlow<LoadingState> get() = _loadingState
@@ -30,8 +35,21 @@ class HomeViewmodel @Inject constructor(private val driveManager: DriveManager) 
     fun createNewEvent(eventItem: NewEventItem) {
         viewModelScope.launch(Dispatchers.IO) {
             _loadingState.emit(LoadingState.Loading("Creating new event folder"))
-            driveManager.createFolder(eventItem)
+            eventFolderRepository.createNewEventFolder(eventItem)
             _loadingState.emit(LoadingState.Success("Event folder created"))
         }
+    }
+
+    fun setRootFolder() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _loadingState.emit(LoadingState.Loading("creating root folder, Please wait"))
+            val rootFolderId = eventFolderRepository.getOrCreateProjectFolder()
+            Log.d(TAG, "setRootFolder: folderId: $rootFolderId")
+            _loadingState.emit(LoadingState.Idle)
+        }
+    }
+
+    fun eventFolderFlow(): Flow<List<EventFolder>> {
+        return eventFolderRepository.getAllEventFolder(viewModelScope)
     }
 }

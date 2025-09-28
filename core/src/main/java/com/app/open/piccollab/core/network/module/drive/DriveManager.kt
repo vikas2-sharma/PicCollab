@@ -3,6 +3,9 @@ package com.app.open.piccollab.core.network.module.drive
 import android.content.Context
 import android.util.Log
 import com.app.open.piccollab.core.db.datastore.DataStorePref
+import com.app.open.piccollab.core.db.datastore.ROOT_FOLDER_KEY
+import com.app.open.piccollab.core.db.room.entities.EventFolder
+import com.app.open.piccollab.core.db.room.repositories.DEFAULT_PROJECT_FOLDER_NAME
 import com.app.open.piccollab.core.models.event.NewEventItem
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
@@ -24,7 +27,7 @@ import java.util.Date
 private const val TAG = "DriveManager"
 
 
-class DriveManager(private val context: Context, dataStorePref: DataStorePref) {
+class DriveManager(private val context: Context, private val dataStorePref: DataStorePref) {
     val tokenMutex = Mutex()
 
     @Volatile
@@ -49,16 +52,22 @@ class DriveManager(private val context: Context, dataStorePref: DataStorePref) {
         }
     }
 
-    fun createFolder(eventItem: NewEventItem): String {
+    fun createFolder(eventItem: NewEventItem, projectFolderId: String? = null): String {
         val file = File()
         file.mimeType = "application/vnd.google-apps.folder"
         file.name = eventItem.eventName
         file.description = eventItem.eventDescription
-
-        val outFile = getDriveService().files().create(file).execute()
-        Log.d(TAG, "createFolder() returned: id: ${outFile.id}")
-        return outFile.id
+        file.parents = listOf(projectFolderId)
+        try {
+            val outFile = getDriveService().files().create(file).execute()
+            Log.d(TAG, "createFolder() returned: id: ${outFile.id}")
+            return outFile.id
+        } catch (e: Exception) {
+            Log.w(TAG, "createFolder: ", e)
+            return ""
+        }
     }
+
 
     private fun getDriveService(): Drive {
         Log.d(TAG, "getDriveService() called")
@@ -76,6 +85,34 @@ class DriveManager(private val context: Context, dataStorePref: DataStorePref) {
 
     fun cancelDriveManagerCoroutine() {
         coroutineScope.cancel()
+    }
+
+    fun rootFolderId(): String? {
+        val fileList = getDriveService().files().list().setQ(
+            "mimeType='application/vnd.google-apps.folder'"
+        )
+            .setFields("files(id, name, createdTime, mimeType)")
+            .execute().files
+        Log.d(TAG, "rootFolderId: files: $fileList")
+        val rootFolder = fileList.find { file -> file.name == DEFAULT_PROJECT_FOLDER_NAME }
+        val rootFolderId = rootFolder?.id
+        Log.d(TAG, "rootFolderId() returned: $rootFolderId")
+        return rootFolderId
+    }
+
+    fun getEventFolderFromDrive(rootProjectId :String): List<EventFolder> {
+        Log.d(TAG, "getEventFolderFromDrive: ")
+        val fileList = getDriveService().files().list().setQ(
+            "'$rootProjectId' in parents and mimeType='application/vnd.google-apps.folder'"
+        )
+            .setFields("files(id, name, createdTime, mimeType, description)")
+            .execute().files
+        val eventFolderList = mutableListOf<EventFolder>()
+        fileList.forEach { file ->
+            eventFolderList.add(EventFolder(file.id, file.name, file.description))
+        }
+        Log.d(TAG, "getEventFolderFromDrive: event folder list $eventFolderList")
+        return eventFolderList
     }
 
 }

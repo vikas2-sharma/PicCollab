@@ -24,6 +24,10 @@ class Provider {
 
     @Singleton
     @Provides
+    fun providesEventFolderDao(userDatabase: UserDatabase) = userDatabase.eventFolderDao()
+
+    @Singleton
+    @Provides
     fun providesDataStore(@ApplicationContext context: Context) = DataStorePref(context)
 
     @Singleton

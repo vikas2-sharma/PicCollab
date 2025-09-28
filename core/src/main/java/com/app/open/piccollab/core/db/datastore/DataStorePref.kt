@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_preferences")
@@ -16,7 +17,7 @@ private const val TAG = "DataStorePref"
 
 val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token_key")
 val EXPIRES_IN_KEY = longPreferencesKey("expires_in_key")
-
+val ROOT_FOLDER_KEY = stringPreferencesKey("root.folder.key")
 
 
 class DataStorePref(private val context: Context) {
@@ -39,6 +40,7 @@ class DataStorePref(private val context: Context) {
             preferences[EXPIRES_IN_KEY] ?: 0L
         }
     }
+
     suspend fun setExpiresIn(expiresIn: Long) {
         context.dataStore.edit { settings ->
             settings[EXPIRES_IN_KEY] = expiresIn
@@ -50,13 +52,20 @@ class DataStorePref(private val context: Context) {
             settings[preferencesKey] = value
         }
     }
-    fun getDataValue(preferencesKey: Preferences.Key<String>): Flow<String> {
+
+    fun getDataValueFlow(preferencesKey: Preferences.Key<String>): Flow<String> {
         return context.dataStore.data.map { preferences ->
             preferences[preferencesKey] ?: ""
         }
     }
 
-    suspend fun clearAllData(){
+    suspend fun getDataValue(preferencesKey: Preferences.Key<String>): String? {
+        return context.dataStore.data.map { preferences ->
+            preferences[preferencesKey]
+        }.first()
+    }
+
+    suspend fun clearAllData() {
         context.dataStore.edit { preferences ->
             preferences.clear()
         }
