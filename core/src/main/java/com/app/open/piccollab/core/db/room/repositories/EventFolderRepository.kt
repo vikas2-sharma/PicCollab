@@ -28,15 +28,18 @@ class EventFolderRepository(
 
     suspend fun getOrCreateProjectFolder(): String {
         /*getting root folder id from local data store*/
+        Log.d(TAG, "getOrCreateProjectFolder: getting root folder id from local data store")
         val rootFolderIfFromPref = dataStorePref.getDataValue(ROOT_FOLDER_KEY)
-        if (rootFolderIfFromPref == null) {
+        if (rootFolderIfFromPref.isNullOrBlank()) {
             /*getting root folder if from google drive*/
+            Log.d(TAG, "getOrCreateProjectFolder: getting root folder if from google drive")
             val rootFolderId = driveManager.rootFolderId()
             if (rootFolderId != null) {
                 Log.d(TAG, "getOrCreateProjectFolder: from drive")
                 return rootFolderId
             } else {
                 /*creating new root folder to google drive*/
+                Log.d(TAG, "getOrCreateProjectFolder: creating new root folder to google drive")
                 val rootFolderItem = NewEventItem(
                     eventName = DEFAULT_PROJECT_FOLDER_NAME,
                     eventDescription = DEFAULT_PROJECT_FOLDER_DESCRIPTION
