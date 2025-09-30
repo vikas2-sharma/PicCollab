@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -76,14 +75,30 @@ fun HomeScreen(
 
 
         /*main content*/
-        val eventList by  viewmodel.eventFolderFlow().collectAsState(emptyList())
+        val eventList by viewmodel.eventFolderFlow().collectAsState(emptyList())
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(eventList) { eventItem ->
-                EventFolderCard(eventName = eventItem.folderName)
+                EventFolderCard(
+                    eventItem = eventItem,
+                    onDeleteClick = { eventItem ->
+                        Log.d(
+                            TAG,
+                            "HomeScreen: todo delete ${eventItem.folderName}"
+                        )
+                    },
+                    onRenameClick = { eventItem ->
+                        Log.d(
+                            TAG,
+                            "HomeScreen: todo rename ${eventItem.folderName}"
+                        )
+                    },
+                ) {
+                    Log.d(TAG, "HomeScreen: open folder: ${eventItem.folderName}")
+                }
             }
         }
 

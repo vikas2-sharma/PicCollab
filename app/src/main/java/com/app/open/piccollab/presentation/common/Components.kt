@@ -1,6 +1,5 @@
 package com.app.open.piccollab.presentation.common
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +24,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +34,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,10 +47,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.app.open.piccollab.R
+import com.app.open.piccollab.core.db.room.entities.EventFolder
 import com.app.open.piccollab.core.models.event.NewEventItem
 import com.app.open.piccollab.presentation.route.Home
 import com.app.open.piccollab.presentation.route.Profile
@@ -129,9 +128,17 @@ fun ButtonWithText(text: String, modifier: Modifier = Modifier, onClick: () -> U
 
 
 @Composable
-fun EventFolderCard(eventName: String) {
+fun EventFolderCard(
+    eventItem: EventFolder,
+    onRenameClick: (EventFolder) -> Unit,
+    onDeleteClick: (EventFolder) -> Unit,
+    onClick: (EventFolder) -> Unit,
+) {
+
+    var dropDownMenuOpen by remember { mutableStateOf(false) }
+
     Card(
-        onClick = {},
+        onClick = { onClick(eventItem) },
         modifier = Modifier
             .aspectRatio(1.5f)
     ) {
@@ -147,17 +154,33 @@ fun EventFolderCard(eventName: String) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = eventName,
+                        text = eventItem.folderName,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = Icons.Default.MoreVert, contentDescription = "options",
-                        modifier = Modifier.size(24.dp)
+                    IconButton(onClick = { dropDownMenuOpen = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert, contentDescription = "options",
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = dropDownMenuOpen,
+                        onDismissRequest = { dropDownMenuOpen = false }
+                    ) {
 
-                    )
+                        DropdownMenuItem(
+                            text = { Text("Rename") },
+                            onClick = { onRenameClick(eventItem) }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Delete") },
+                            onClick = { onDeleteClick(eventItem) }
+                        )
+
+                    }
                 }
                 Icon(
                     painterResource(R.drawable.ic_folder_24),
@@ -294,9 +317,11 @@ fun CreateNewEventCard(onCancel: () -> Unit, onSubmit: (newEventItem: NewEventIt
 fun ProgressDialog(progressMessage: String) {
     Dialog(onDismissRequest = {}) {
         Card {
-            Box(modifier = Modifier
-                .padding(24.dp, 32.dp)
-                .fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .padding(24.dp, 32.dp)
+                    .fillMaxWidth()
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
