@@ -35,10 +35,10 @@ class DataStorePref(private val context: Context) {
         }
     }
 
-    fun getExpiresIn(): Flow<Long> {
+    suspend fun getExpiresIn(): Long {
         return context.dataStore.data.map { preferences ->
             preferences[EXPIRES_IN_KEY] ?: 0L
-        }
+        }.first()
     }
 
     suspend fun setExpiresIn(expiresIn: Long) {
