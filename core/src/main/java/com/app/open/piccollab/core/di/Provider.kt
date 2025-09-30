@@ -1,6 +1,7 @@
 package com.app.open.piccollab.core.di
 
 import android.content.Context
+import com.app.open.piccollab.core.auth.AuthManager
 import com.app.open.piccollab.core.db.datastore.DataStorePref
 import com.app.open.piccollab.core.db.room.database.UserDatabase
 import com.app.open.piccollab.core.network.module.drive.DriveManager
@@ -32,8 +33,12 @@ class Provider {
 
     @Singleton
     @Provides
-    fun providesDriveManager(@ApplicationContext context: Context, dataStorePref: DataStorePref) =
-        DriveManager(context, dataStorePref)
+    fun providesDriveManager(
+        @ApplicationContext context: Context,
+        dataStorePref: DataStorePref,
+        authManager: AuthManager
+    ) =
+        DriveManager(context, dataStorePref, authManager)
 
 
 }
