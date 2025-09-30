@@ -28,12 +28,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.security.MessageDigest
+import java.util.Date
 import java.util.UUID
 
 private const val TAG = "AuthManager"
 
-class AuthManager(private val dataStorePref: DataStorePref) {
+class AuthManager(private val context: Context, private val dataStorePref: DataStorePref) {
     fun startGoogleAuthentication(context: Context): Flow<UserData?> {
         return flow {
             try {
@@ -100,7 +102,6 @@ class AuthManager(private val dataStorePref: DataStorePref) {
         Identity.getAuthorizationClient(activity)
             .authorize(authorizationRequest)
             .addOnSuccessListener { authorizationResult ->
-
                 if (authorizationResult.hasResolution()) {
                     val pendingIntent = authorizationResult.pendingIntent
                     // Access needs to be granted by the user
@@ -128,28 +129,50 @@ class AuthManager(private val dataStorePref: DataStorePref) {
                         TAG,
                         "getDrivePermission: result authorizationResult: $authorizationResult"
                     )
-
                     RestApiManager.accessToken = authorizationResult.accessToken
                     CoroutineScope(Dispatchers.IO).launch {
                         dataStorePref.setAccessToken(
                             authorizationResult.accessToken ?: ""
                         )
-
+                        dataStorePref.setExpiresIn(Date().time + 300_000)
                         delay(1000)
                         dataStorePref.getAccessToken().collect { accessToken ->
                             Log.d(TAG, "getDrivePermission: accessTokenSaved: $accessToken")
                         }
-
-
-                    } //how to call this suspend method
-                    // Access was previously granted, continue with user action
-                    /*saveToDriveAppFolder(authorizationResult);*/
+                    }
                 }
             }
             .addOnFailureListener { e -> Log.e(TAG, "Failed to authorize", e) }
     }
 
-    fun logout(activity: Activity){
+
+    suspend fun getNewToken() {
+        Log.d(TAG, "getNewToken: ")
+
+        val requestedScopes = listOf(Scope(DriveScopes.DRIVE_FILE))
+        val authorizationRequest = AuthorizationRequest.Builder()
+            .setRequestedScopes(requestedScopes)
+            .build()
+
+        try {
+            // Use await() to suspend until the Task is complete
+            val result = Identity.getAuthorizationClient(context)
+                .authorize(authorizationRequest)
+                .await()
+
+            Log.d(TAG, "getNewToken: result: $result")
+
+            dataStorePref.setAccessToken(result.accessToken ?: "")
+            dataStorePref.setExpiresIn(Date().time + 300_000) // 5 minutes from now
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting new token", e)
+            // handle errors properly
+        }
+    }
+
+
+    fun logout(activity: Activity) {
         val signInClient = Identity.getSignInClient(activity)
         // This clears the account and forces re-consent next time
         signInClient.signOut()

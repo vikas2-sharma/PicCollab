@@ -1,11 +1,13 @@
 package com.app.open.piccollab.core.network.module
 
+import android.content.Context
 import com.app.open.piccollab.core.auth.AuthManager
 import com.app.open.piccollab.core.db.datastore.DataStorePref
 import com.app.open.piccollab.core.network.module.apiservices.DriveApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -38,7 +40,10 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun providesAuthManager(dataStorePref: DataStorePref): AuthManager{
-        return AuthManager(dataStorePref)
+    fun providesAuthManager(
+        @ApplicationContext context: Context,
+        dataStorePref: DataStorePref
+    ): AuthManager {
+        return AuthManager(context, dataStorePref)
     }
 }
