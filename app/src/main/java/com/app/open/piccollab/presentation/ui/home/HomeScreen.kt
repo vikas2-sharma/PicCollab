@@ -89,6 +89,7 @@ fun HomeScreen(
                             TAG,
                             "HomeScreen: todo delete ${eventItem.folderName}"
                         )
+                        viewmodel.deleteEventFolder(eventItem)
                     },
                     onRenameClick = { eventItem ->
                         Log.d(

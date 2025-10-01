@@ -52,4 +52,13 @@ class HomeViewmodel @Inject constructor(
     fun eventFolderFlow(): Flow<List<EventFolder>> {
         return eventFolderRepository.getAllEventFolder(viewModelScope)
     }
+
+    fun deleteEventFolder(eventItem: EventFolder) {
+        Log.d(TAG, "deleteEventFolder() called with: eventItem = $eventItem")
+        viewModelScope.launch(Dispatchers.IO) {
+            _loadingState.emit(LoadingState.Loading("Deleting ${eventItem.folderName}"))
+            eventFolderRepository.deleteFolder(eventItem)
+            _loadingState.emit(LoadingState.Idle)
+        }
+    }
 }
