@@ -160,26 +160,29 @@ fun EventFolderCard(
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(onClick = { dropDownMenuOpen = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert, contentDescription = "options",
-                            modifier = Modifier.size(24.dp),
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = dropDownMenuOpen,
-                        onDismissRequest = { dropDownMenuOpen = false }
-                    ) {
+                    Box {
+                        IconButton(onClick = { dropDownMenuOpen = true }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "options",
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = dropDownMenuOpen,
+                            onDismissRequest = { dropDownMenuOpen = false }
+                        ) {
 
-                        DropdownMenuItem(
-                            text = { Text("Rename") },
-                            onClick = { onRenameClick(eventItem) }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Delete") },
-                            onClick = { onDeleteClick(eventItem) }
-                        )
+                            DropdownMenuItem(
+                                text = { Text("Rename") },
+                                onClick = { onRenameClick(eventItem) }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Delete") },
+                                onClick = { onDeleteClick(eventItem) }
+                            )
 
+                        }
                     }
                 }
                 Icon(
