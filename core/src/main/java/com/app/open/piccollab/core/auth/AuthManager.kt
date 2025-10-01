@@ -134,7 +134,7 @@ class AuthManager(private val context: Context, private val dataStorePref: DataS
                         dataStorePref.setAccessToken(
                             authorizationResult.accessToken ?: ""
                         )
-                        dataStorePref.setExpiresIn(Date().time + 300_000)
+                        dataStorePref.setExpiresIn(Date().time + 100_000)
                         delay(1000)
                         dataStorePref.getAccessToken().collect { accessToken ->
                             Log.d(TAG, "getDrivePermission: accessTokenSaved: $accessToken")
@@ -163,7 +163,7 @@ class AuthManager(private val context: Context, private val dataStorePref: DataS
             Log.d(TAG, "getNewToken: result: $result")
 
             dataStorePref.setAccessToken(result.accessToken ?: "")
-            dataStorePref.setExpiresIn(Date().time + 300_000) // 5 minutes from now
+            dataStorePref.setExpiresIn(Date().time + 100_000) // 5 minutes from now
 
         } catch (e: Exception) {
             Log.e(TAG, "Error getting new token", e)
