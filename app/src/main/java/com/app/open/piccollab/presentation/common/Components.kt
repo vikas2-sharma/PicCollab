@@ -175,11 +175,17 @@ fun EventFolderCard(
 
                             DropdownMenuItem(
                                 text = { Text("Rename") },
-                                onClick = { onRenameClick(eventItem) }
+                                onClick = {
+                                    onRenameClick(eventItem)
+                                    dropDownMenuOpen = false
+                                }
                             )
                             DropdownMenuItem(
                                 text = { Text("Delete") },
-                                onClick = { onDeleteClick(eventItem) }
+                                onClick = {
+                                    onDeleteClick(eventItem)
+                                    dropDownMenuOpen = false
+                                }
                             )
 
                         }
