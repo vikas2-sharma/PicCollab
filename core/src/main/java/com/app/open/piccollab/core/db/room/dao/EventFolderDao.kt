@@ -1,12 +1,12 @@
 package com.app.open.piccollab.core.db.room.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.app.open.piccollab.core.db.room.entities.EventFolder
 import kotlinx.coroutines.flow.Flow
-import retrofit2.http.DELETE
 
 
 @Dao
@@ -23,4 +23,7 @@ interface EventFolderDao {
 
     @Query("DELETE FROM events")
     suspend fun deleteAllFolder()
+
+    @Query("DELETE FROM events WHERE folderId IS :folderId")
+    suspend fun deleteFolderById(folderId: String)
 }

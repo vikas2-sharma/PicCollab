@@ -83,4 +83,12 @@ class EventFolderRepository(
     suspend fun removeAllFolderFromDB() {
         eventFolderDao.deleteAllFolder()
     }
+
+    suspend fun deleteFolder(eventFolder: EventFolder) {
+        Log.d(TAG, "deleteFolder() called with: eventFolder = $eventFolder")
+        driveManager.deleteFolderWithId(eventFolder)
+        Log.d(TAG, "deleteFolder: deleted from drive")
+        eventFolderDao.deleteFolderById(eventFolder.folderId)
+        Log.d(TAG, "deleteFolder: deleted from db ")
+    }
 }

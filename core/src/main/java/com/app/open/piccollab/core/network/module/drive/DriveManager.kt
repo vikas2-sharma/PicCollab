@@ -107,11 +107,11 @@ class DriveManager(
         return driveService
     }
 
-/*
-    fun cancelDriveManagerCoroutine() {
-        coroutineScope.cancel()
-    }
-*/
+    /*
+        fun cancelDriveManagerCoroutine() {
+            coroutineScope.cancel()
+        }
+    */
 
     suspend fun rootFolderId(): String? {
         Log.d(TAG, "rootFolderId() called")
@@ -157,5 +157,21 @@ class DriveManager(
             return emptyList()
         }
     }
+
+
+    suspend fun deleteFolderWithId(eventFolder: EventFolder) {
+        try {
+            Log.d(TAG, "deleteFolderWithId() called with: eventFolder = $eventFolder")
+            val driveService = getDriveService()
+            if (driveService != null) {
+                Log.d(TAG, "deleteFolderWithId: starting delete")
+                val deleteResult = driveService.files().delete(eventFolder.folderId).execute()
+                Log.d(TAG, "deleteFolderWithId: delete result: $deleteResult")
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "deleteFolderWithId: ", e)
+        }
+    }
+
 
 }
