@@ -70,6 +70,10 @@ class EventFolderRepository(
 
     fun getAllEventFolder(viewModelScope: CoroutineScope): Flow<List<EventFolder>> {
         val allEventFolder = eventFolderDao.getAllEventFolder()
+        return allEventFolder
+    }
+
+    fun refreshEventFolderWithDrive(viewModelScope: CoroutineScope){
         viewModelScope.launch(Dispatchers.IO) {
             val rootProjectId = getOrCreateProjectFolder()
             val eventFolderList = driveManager.getEventFolderFromDrive(rootProjectId)
@@ -77,7 +81,6 @@ class EventFolderRepository(
                 eventFolderDao.insertEventFolder(eventItem)
             }
         }
-        return allEventFolder
     }
 
     suspend fun removeAllFolderFromDB() {

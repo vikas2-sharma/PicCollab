@@ -35,6 +35,8 @@ fun HomeScreen(
 ) {
     var showNewFolderDialog by remember { mutableStateOf(false) }
     val loadingState by viewmodel.loadingState.collectAsState()
+    val eventList by viewmodel.eventFolderFlow().collectAsState(emptyList())
+
     LaunchedEffect(Unit) {
         viewmodel.setRootFolder()
         setFabOnClick { showNewFolderDialog = !showNewFolderDialog }
@@ -75,13 +77,14 @@ fun HomeScreen(
 
 
         /*main content*/
-        val eventList by viewmodel.eventFolderFlow().collectAsState(emptyList())
+        Log.d(TAG, "HomeScreen: eventList size: ${eventList.size}")
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(eventList) { eventItem ->
+            items(eventList, key = { eventItem -> eventItem.folderId }) { eventItem ->
+                Log.d(TAG, "HomeScreen: eventItem: ${eventItem.folderName}")
                 EventFolderCard(
                     eventItem = eventItem,
                     onDeleteClick = { eventItem ->
