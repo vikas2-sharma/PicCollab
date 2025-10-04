@@ -11,6 +11,7 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File
+import com.google.api.services.drive.model.Permission
 import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.AccessToken
 import com.google.auth.oauth2.GoogleCredentials
@@ -24,6 +25,31 @@ import kotlinx.coroutines.sync.withLock
 import java.util.Date
 
 private const val TAG = "DriveManager"
+
+
+data class DriveResult(
+    val responseCode: Int,
+    val responseMessage: String,
+    val isSuccess: Boolean = false
+) {
+    companion object {
+        fun success(responseCode: Int, responseMessage: String): DriveResult {
+            return DriveResult(
+                responseCode = responseCode,
+                responseMessage = responseMessage,
+                isSuccess = true
+            )
+        }
+
+        fun failure(responseCode: Int, responseMessage: String): DriveResult {
+            return DriveResult(
+                responseCode = responseCode,
+                responseMessage = responseMessage,
+                isSuccess = false
+            )
+        }
+    }
+}
 
 
 class DriveManager(
@@ -66,9 +92,25 @@ class DriveManager(
         file.name = eventItem.eventName
         file.description = eventItem.eventDescription
         file.parents = listOf(projectFolderId)
+        /*val permission = Permission()
+        permission.allowFileDiscovery = true
+        permission.type = "anyone"
+        file.setPermissions(listOf(permission))*/
         try {
             val outFile = getDriveService()?.files()?.create(file)?.execute()
             Log.d(TAG, "createFolder() returned: id: ${outFile?.id}")
+
+            val permission = Permission().apply {
+                type = "anyone"
+                role = "writer"
+                allowFileDiscovery = false
+            }
+
+            getDriveService()?.permissions()?.create(outFile?.id, permission)?.execute()
+
+
+
+
             return outFile?.id ?: ""
         } catch (e: Exception) {
             Log.w(TAG, "createFolder: ", e)

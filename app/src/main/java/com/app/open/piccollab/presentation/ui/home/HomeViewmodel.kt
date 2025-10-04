@@ -37,6 +37,7 @@ class HomeViewmodel @Inject constructor(
             _loadingState.emit(LoadingState.Loading("Creating new event folder"))
             eventFolderRepository.createNewEventFolder(eventItem)
             _loadingState.emit(LoadingState.Success("Event folder created"))
+            eventFolderRepository.refreshEventFolderWithDrive(viewModelScope)
         }
     }
 
@@ -47,9 +48,11 @@ class HomeViewmodel @Inject constructor(
             Log.d(TAG, "setRootFolder: folderId: $rootFolderId")
             _loadingState.emit(LoadingState.Idle)
         }
+        eventFolderRepository.refreshEventFolderWithDrive(viewModelScope)
     }
 
     fun eventFolderFlow(): Flow<List<EventFolder>> {
+        Log.d(TAG, "eventFolderFlow: ")
         return eventFolderRepository.getAllEventFolder(viewModelScope)
     }
 
@@ -60,5 +63,6 @@ class HomeViewmodel @Inject constructor(
             eventFolderRepository.deleteFolder(eventItem)
             _loadingState.emit(LoadingState.Idle)
         }
+        eventFolderRepository.refreshEventFolderWithDrive(viewModelScope)
     }
 }
