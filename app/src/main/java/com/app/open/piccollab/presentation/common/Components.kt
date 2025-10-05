@@ -132,6 +132,7 @@ fun EventFolderCard(
     eventItem: EventFolder,
     onRenameClick: (EventFolder) -> Unit,
     onDeleteClick: (EventFolder) -> Unit,
+    onShareClick: (EventFolder) -> Unit,
     onClick: (EventFolder) -> Unit,
 ) {
 
@@ -177,6 +178,13 @@ fun EventFolderCard(
                                 text = { Text("Rename") },
                                 onClick = {
                                     onRenameClick(eventItem)
+                                    dropDownMenuOpen = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Share") },
+                                onClick = {
+                                    onShareClick(eventItem)
                                     dropDownMenuOpen = false
                                 }
                             )
