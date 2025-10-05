@@ -1,5 +1,8 @@
 package com.app.open.piccollab.presentation.ui.home
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +45,8 @@ fun HomeScreen(
         setFabOnClick { showNewFolderDialog = !showNewFolderDialog }
     }
     val context = LocalContext.current
+    val clipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = modifier.padding(12.dp)
@@ -100,6 +105,16 @@ fun HomeScreen(
                             "HomeScreen: todo rename ${eventItem.folderName}"
                         )
                     },
+                    onShareClick = { eventItem ->
+
+                        clipboardManager.setPrimaryClip(
+                            ClipData.newPlainText(
+                                eventItem.folderName,
+                                "https://drive.google.com/drive/folders/${eventItem.folderId}"
+                            )
+                        )
+                        Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
+                    }
                 ) {
                     Log.d(TAG, "HomeScreen: open folder: ${eventItem.folderName}")
                 }
