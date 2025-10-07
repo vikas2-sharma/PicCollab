@@ -31,6 +31,9 @@ class HomeViewmodel @Inject constructor(
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Idle)
     val loadingState: StateFlow<LoadingState> get() = _loadingState
 
+    init {
+        setRootFolder()
+    }
 
     fun createNewEvent(eventItem: NewEventItem) {
         viewModelScope.launch(Dispatchers.IO) {
