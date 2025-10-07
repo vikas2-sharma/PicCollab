@@ -1,5 +1,6 @@
 package com.app.open.piccollab.presentation.common
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,13 +42,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import coil3.Bitmap
 import com.app.open.piccollab.R
 import com.app.open.piccollab.core.db.room.entities.EventFolder
 import com.app.open.piccollab.core.models.event.NewEventItem
@@ -351,6 +356,58 @@ fun ProgressDialog(progressMessage: String) {
         }
 
     }
+}
+
+
+@Composable
+fun ShareEventQrCard(
+    bitmapQR: Bitmap,
+    eventFolder: EventFolder?,
+    onDismiss: () -> Unit,
+    onClickSave: () -> Unit = {},
+    onClickShare: () -> Unit = {}
+) {
+    val localView = LocalView.current
+    Dialog(onDismissRequest = onDismiss) {
+        Card {
+            Box(modifier = Modifier.padding(24.dp)) {
+                Column {
+                    Text(
+                        text = "Event Name: ${eventFolder?.folderName ?: ""}",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Companion.Bold
+                    )
+                    SpacerHeight(8.dp)
+                    Image(
+                        bitmap = bitmapQR.asImageBitmap(), contentDescription = null
+                    )
+                    SpacerHeight(8.dp)
+                    if (!eventFolder?.folderDescription.isNullOrBlank()) {
+                        Text(
+                            text = "Description: ${eventFolder.folderDescription}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                    SpacerHeight(12.dp)
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        ButtonWithText("Save", modifier = Modifier.fillMaxWidth()) { onClickSave }
+                        ButtonWithText("Share", modifier = Modifier.fillMaxWidth()) { onClickShare }
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
+fun SpacerHeight(height: Dp) {
+    Spacer(modifier = Modifier.height(height))
+}
+
+@Composable
+fun SpacerWidth(width: Dp) {
+    Spacer(modifier = Modifier.width(width))
 }
 
 @Preview()
