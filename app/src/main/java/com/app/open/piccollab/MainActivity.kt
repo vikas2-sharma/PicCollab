@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,6 +41,7 @@ import com.app.open.piccollab.presentation.route.Loading
 import com.app.open.piccollab.presentation.route.Login
 import com.app.open.piccollab.presentation.route.Profile
 import com.app.open.piccollab.presentation.ui.home.HomeScreen
+import com.app.open.piccollab.presentation.ui.home.HomeViewmodel
 import com.app.open.piccollab.presentation.ui.login.LoginScreen
 import com.app.open.piccollab.presentation.ui.profile.ProfileScreen
 import com.app.open.piccollab.ui.theme.PicCollabTheme
@@ -156,8 +158,12 @@ fun MainScreen(
         composable<Profile> {
             ProfileScreen(modifier)
         }
-        composable<Home> {
-            HomeScreen(modifier = modifier, setFabOnClick)
+        composable<Home> { backStackEntry ->
+            HomeScreen(
+                modifier = modifier,
+                setFabOnClick = setFabOnClick,
+                viewmodel = hiltViewModel<HomeViewmodel>(viewModelStoreOwner = backStackEntry)
+            )
         }
         composable<Loading> {
             LoadingScreen()
