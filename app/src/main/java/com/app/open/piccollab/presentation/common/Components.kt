@@ -1,5 +1,7 @@
 package com.app.open.piccollab.presentation.common
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,7 +54,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import coil3.Bitmap
+import androidx.core.graphics.createBitmap
 import com.app.open.piccollab.R
 import com.app.open.piccollab.core.db.room.entities.EventFolder
 import com.app.open.piccollab.core.models.event.NewEventItem
@@ -364,10 +366,14 @@ fun ShareEventQrCard(
     bitmapQR: Bitmap,
     eventFolder: EventFolder?,
     onDismiss: () -> Unit,
-    onClickSave: () -> Unit = {},
+    onClickSave: (bitmap: Bitmap, eventFolder: EventFolder?) -> Unit = { bitmapQR, evenFolder -> },
     onClickShare: () -> Unit = {}
 ) {
     val localView = LocalView.current
+    val viewBitmap = createBitmap(localView.width, localView.height)
+    val canvas = Canvas(viewBitmap)
+    canvas.drawColor(android.graphics.Color.WHITE)
+    localView.draw(canvas)
     Dialog(onDismissRequest = onDismiss) {
         Card {
             Box(modifier = Modifier.padding(24.dp)) {
@@ -390,7 +396,9 @@ fun ShareEventQrCard(
                     }
                     SpacerHeight(12.dp)
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        ButtonWithText("Save", modifier = Modifier.fillMaxWidth()) { onClickSave }
+                        ButtonWithText("Save", modifier = Modifier.fillMaxWidth()) {
+                            onClickSave(viewBitmap, eventFolder)
+                        }
                         ButtonWithText("Share", modifier = Modifier.fillMaxWidth()) { onClickShare }
                     }
                 }

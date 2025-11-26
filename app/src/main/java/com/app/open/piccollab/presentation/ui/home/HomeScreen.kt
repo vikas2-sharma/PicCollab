@@ -67,7 +67,10 @@ fun HomeScreen(
                     gson.toJson(shareEventFolder),
                     screenWidth
                 ), shareEventFolder,
-                onDismiss = { shareEventFolder = null }
+                onDismiss = { shareEventFolder = null },
+                onClickSave = { bitmap, eventItem ->
+                    viewmodel.saveEventQrCode(context, bitmap, eventItem)
+                }
             ) {
                 shareEventFolder = null
             }

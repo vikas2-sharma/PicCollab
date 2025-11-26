@@ -1,11 +1,14 @@
 package com.app.open.piccollab.presentation.ui.home
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil3.Bitmap
 import com.app.open.piccollab.core.db.room.entities.EventFolder
 import com.app.open.piccollab.core.db.room.repositories.EventFolderRepository
 import com.app.open.piccollab.core.models.event.NewEventItem
+import com.app.open.piccollab.core.utils.FileUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -67,5 +70,13 @@ class HomeViewmodel @Inject constructor(
             _loadingState.emit(LoadingState.Idle)
         }
         eventFolderRepository.refreshEventFolderWithDrive(viewModelScope)
+    }
+
+    fun saveEventQrCode(context: Context, bitmap: Bitmap, eventItem: EventFolder?) {
+        viewModelScope.launch {
+            eventItem?.let {
+                FileUtil.savePhotoToStorage(context, it, bitmap)
+            }
+        }
     }
 }
