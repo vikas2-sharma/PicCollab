@@ -137,6 +137,11 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    /*camera support*/
+
+    implementation(libs.androidx.camera.compose)
+    implementation(libs.accompanist.permissions)
+
 
 
 }

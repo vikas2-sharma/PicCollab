@@ -32,6 +32,8 @@ retrofit = "3.0.0"
 roomRuntime = "2.7.2"
 roomCompiler = "2.7.2"
 zxingAndroidEmbedded = "4.3.0"
+camerax = "1.5.0-alpha06"
+accompanist = "0.37.2" # or whatever matches with your Compose version
 
 [libraries]
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
@@ -79,6 +81,12 @@ material = { group = "com.google.android.material", name = "material", version.r
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
+
+
+# Contains the CameraXViewfinder composable
+androidx-camera-compose = { module = "androidx.camera:camera-compose", version.ref = "camerax" }
+# The helper library to grant the camera permission
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
