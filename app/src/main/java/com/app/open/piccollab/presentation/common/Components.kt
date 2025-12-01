@@ -60,13 +60,15 @@ import com.app.open.piccollab.core.db.room.entities.EventFolder
 import com.app.open.piccollab.core.models.event.NewEventItem
 import com.app.open.piccollab.presentation.route.Home
 import com.app.open.piccollab.presentation.route.Profile
+import com.app.open.piccollab.presentation.route.Scan
 import com.app.open.piccollab.presentation.route.Search
 
 @Composable
 fun BottomNavigation(
     selectedRoute: String,
     navigateToHome: () -> Unit,
-    navigateToProfile: () -> Unit
+    navigateToProfile: () -> Unit,
+    navigateToScan:() -> Unit
 ) {
     NavigationBar {
         NavigationBarItem(
@@ -81,8 +83,8 @@ fun BottomNavigation(
 
             )
         NavigationBarItem(
-            selected = selectedRoute == Search::class.qualifiedName,
-            onClick = { /*TODO*/ },
+            selected = selectedRoute == Scan::class.qualifiedName,
+            onClick = { navigateToScan() },
             icon = {
                 Icon(
                     imageVector = Icons.Default.Search,

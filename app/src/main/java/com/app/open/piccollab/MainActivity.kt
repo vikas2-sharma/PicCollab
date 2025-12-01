@@ -40,6 +40,8 @@ import com.app.open.piccollab.presentation.route.Home
 import com.app.open.piccollab.presentation.route.Loading
 import com.app.open.piccollab.presentation.route.Login
 import com.app.open.piccollab.presentation.route.Profile
+import com.app.open.piccollab.presentation.route.Scan
+import com.app.open.piccollab.presentation.ui.camera.CameraScreen
 import com.app.open.piccollab.presentation.ui.home.HomeScreen
 import com.app.open.piccollab.presentation.ui.home.HomeViewmodel
 import com.app.open.piccollab.presentation.ui.login.LoginScreen
@@ -81,11 +83,15 @@ class MainActivity : ComponentActivity() {
                         FloatingActionButtonByRoutes(currentRoute, fabOnClick)
                     }, bottomBar = {
                         if (!accessToken.isNullOrEmpty()) {
-                            BottomNavigation(selectedRoute = currentRoute, navigateToHome = {
-                                navController.navigate(Home) {
-                                    popUpTo(Home) { inclusive = true }
-                                }
-                            }, navigateToProfile = { navController.navigate(Profile) })
+                            BottomNavigation(
+                                selectedRoute = currentRoute,
+                                navigateToHome = {
+                                    navController.navigate(Home) {
+                                        popUpTo(Home) { inclusive = true }
+                                    }
+                                },
+                                navigateToProfile = { navController.navigate(Profile) },
+                                navigateToScan = { navController.navigate(Scan) })
                         }
                     }, topBar = {
                         TopAppBar(
@@ -157,6 +163,9 @@ fun MainScreen(
         }
         composable<Profile> {
             ProfileScreen(modifier)
+        }
+        composable<Scan> {
+            CameraScreen(modifier)
         }
         composable<Home> { backStackEntry ->
             HomeScreen(

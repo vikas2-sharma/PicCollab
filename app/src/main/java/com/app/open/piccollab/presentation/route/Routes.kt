@@ -13,6 +13,9 @@ object Profile
 object Loading
 
 @Serializable
+object Scan
+
+@Serializable
 object Home
 
 @Serializable
