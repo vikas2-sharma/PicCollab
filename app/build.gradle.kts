@@ -141,7 +141,7 @@ dependencies {
 
     implementation(libs.androidx.camera.compose)
     implementation(libs.accompanist.permissions)
-
+    implementation(libs.barcode.scanning)
 
 
 }
